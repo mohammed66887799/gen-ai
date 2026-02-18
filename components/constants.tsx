@@ -1,11 +1,12 @@
 
 import React from 'react';
-import { AppRoute } from './types';
+import { AppRoute } from '../types';
 
 export const NAV_ITEMS = [
   { label: 'Home', path: AppRoute.HOME, icon: <i className="fas fa-home"></i> },
   { label: 'Dashboard', path: AppRoute.DASHBOARD, icon: <i className="fas fa-chart-line"></i> },
   { label: 'Diagnosis', path: AppRoute.DIAGNOSIS, icon: <i className="fas fa-microscope"></i> },
+  { label: 'Live Detect', path: AppRoute.LIVE, icon: <i className="fas fa-video"></i> },
   { label: 'History', path: AppRoute.HISTORY, icon: <i className="fas fa-history"></i> },
   { label: 'Resources', path: AppRoute.RESOURCES, icon: <i className="fas fa-book"></i> },
   { label: 'Profile', path: AppRoute.PROFILE, icon: <i className="fas fa-user-circle"></i> },

@@ -34,6 +34,7 @@ export enum AppRoute {
   HOME = '/',
   DASHBOARD = '/dashboard',
   DIAGNOSIS = '/diagnosis',
+  LIVE = '/live',
   HISTORY = '/history',
   PROFILE = '/profile',
   RESOURCES = '/resources'

@@ -2,6 +2,7 @@
   "name": "AgroDetect AI - Plant Disease Classification",
   "description": "A production-grade agricultural diagnosis platform using AI to identify plant diseases from leaf images and provide actionable treatment recommendations.",
   "requestFramePermissions": [
-    "camera"
+    "camera",
+    "microphone"
   ]
 }

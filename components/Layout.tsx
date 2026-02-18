@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { NAV_ITEMS } from '../constants';
+import { NAV_ITEMS } from './constants';
 
 interface LayoutProps {
   children: React.ReactNode;
