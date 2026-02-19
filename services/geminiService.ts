@@ -1,8 +1,7 @@
-
 import { GoogleGenAI, Type } from "@google/genai";
 import { ScanResult } from "../types";
 
-// Always initialize with the exact environment variable as specified in the guidelines
+// The API key is injected by Vite during the build process from Netlify env vars
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 export const analyzePlantDisease = async (base64Image: string): Promise<ScanResult> => {
@@ -43,7 +42,7 @@ export const analyzePlantDisease = async (base64Image: string): Promise<ScanResu
       },
     });
 
-    // Directly access the .text property (not a method)
+    // Access .text property directly per latest SDK rules
     const resultStr = response.text;
     if (!resultStr) throw new Error("No response from AI");
     
