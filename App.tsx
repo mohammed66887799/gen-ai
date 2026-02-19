@@ -1,5 +1,6 @@
+
 import React from 'react';
-import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './components/Layout';
 import Home from './components/pages/Home';
 import Dashboard from './components/pages/Dashboard';
@@ -9,7 +10,7 @@ import { AppRoute } from './types';
 
 const App: React.FC = () => {
   return (
-    <Router>
+    <HashRouter>
       <Layout>
         <Routes>
           <Route path={AppRoute.HOME} element={<Home />} />
@@ -22,7 +23,7 @@ const App: React.FC = () => {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Layout>
-    </Router>
+    </HashRouter>
   );
 };
 

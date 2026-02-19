@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { GoogleGenAI, Modality, LiveServerMessage } from '@google/genai';
 
-// --- Utility Functions for Audio ---
+// --- Utility Functions for Audio (Manual implementations required by guidelines) ---
 function decode(base64: string) {
   const binaryString = atob(base64);
   const len = binaryString.length;
@@ -82,7 +82,9 @@ const LiveDetection: React.FC = () => {
       }
 
       setStatus('Connecting to AI Agronomist...');
-      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
+      
+      // Create a fresh instance right before connecting to use the latest API_KEY
+      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
       
       audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 16000 });
       outputAudioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
@@ -96,7 +98,7 @@ const LiveDetection: React.FC = () => {
             setStatus('Live: Examining your plants...');
             setIsActive(true);
             
-            // Audio Stream
+            // Audio Stream from Mic
             const source = audioContextRef.current!.createMediaStreamSource(stream);
             const scriptProcessor = audioContextRef.current!.createScriptProcessor(4096, 1, 1);
             scriptProcessor.onaudioprocess = (e) => {
@@ -110,6 +112,7 @@ const LiveDetection: React.FC = () => {
                 data: encode(new Uint8Array(int16.buffer)),
                 mimeType: 'audio/pcm;rate=16000',
               };
+              // Crucial: Use the sessionPromise to send data to avoid race conditions
               sessionPromise.then(session => {
                 session.sendRealtimeInput({ media: pcmBlob });
               });
@@ -117,11 +120,11 @@ const LiveDetection: React.FC = () => {
             source.connect(scriptProcessor);
             scriptProcessor.connect(audioContextRef.current!.destination);
 
-            // Video Stream (1 frame per second to save bandwidth but maintain live feel)
+            // Video Stream (1 frame per second)
             frameIntervalRef.current = window.setInterval(() => {
               if (canvasRef.current && videoRef.current) {
                 const ctx = canvasRef.current.getContext('2d');
-                canvasRef.current.width = videoRef.current.videoWidth / 2; // Downscale for faster upload
+                canvasRef.current.width = videoRef.current.videoWidth / 2;
                 canvasRef.current.height = videoRef.current.videoHeight / 2;
                 ctx?.drawImage(videoRef.current, 0, 0, canvasRef.current.width, canvasRef.current.height);
                 
@@ -135,16 +138,16 @@ const LiveDetection: React.FC = () => {
             }, 1000);
           },
           onmessage: async (message: LiveServerMessage) => {
-            // Handle Transcriptions
+            // Handle Output Transcription
             if (message.serverContent?.outputTranscription) {
-              setTranscription(prev => prev + ' ' + message.serverContent?.outputTranscription?.text);
+              setTranscription(prev => prev + ' ' + (message.serverContent?.outputTranscription?.text || ''));
             }
             if (message.serverContent?.turnComplete) {
-              setTranscription(''); // Reset transcription on turn complete or keep it for history
+              setTranscription(''); 
             }
 
-            // Handle Audio Output
-            const base64Audio = message.serverContent?.modelTurn?.parts[0]?.inlineData?.data;
+            // Handle Audio Output (Model's voice)
+            const base64Audio = message.serverContent?.modelTurn?.parts?.[0]?.inlineData?.data;
             if (base64Audio && outputAudioContextRef.current) {
               nextStartTimeRef.current = Math.max(nextStartTimeRef.current, outputAudioContextRef.current.currentTime);
               const audioBuffer = await decodeAudioData(
@@ -180,7 +183,7 @@ const LiveDetection: React.FC = () => {
         },
         config: {
           responseModalities: [Modality.AUDIO],
-          systemInstruction: "You are a world-class AI Agronomist. The user is showing you a live video feed of their plants. Your job is to describe what you see, identify any signs of pests or diseases in real-time, and speak concisely but informatively. If you see a healthy plant, tell them it looks good! If you see symptoms like spots, yellowing, or wilting, diagnose them and suggest immediate organic or chemical treatments. Keep your voice friendly and helpful.",
+          systemInstruction: "You are a world-class AI Agronomist. The user is showing you a live video feed of their plants. Your job is to describe what you see, identify any signs of pests or diseases in real-time, and speak concisely but informatively. Keep your voice friendly and helpful.",
           speechConfig: {
             voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Kore' } }
           },

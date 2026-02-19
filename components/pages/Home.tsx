@@ -29,7 +29,7 @@ const Home: React.FC = () => {
 
       <section className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {[
-          { icon: 'fa-bolt', title: 'Instant Detection', desc: 'Get results in under 5 seconds using MobileNetV2 optimized neural networks.' },
+          { icon: 'fa-bolt', title: 'Instant Detection', desc: 'Get results in under 5 seconds using optimized neural networks.' },
           { icon: 'fa-file-medical', title: 'Expert Protocols', desc: 'Actionable treatment plans curated by top agronomists and AI research.' },
           { icon: 'fa-shield-halved', title: 'Crop Protection', desc: 'Predict potential outbreaks in your region with community-shared data.' },
         ].map((feat, i) => (

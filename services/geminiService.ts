@@ -2,7 +2,8 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { ScanResult } from "../types";
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
+// Always initialize with the exact environment variable as specified in the guidelines
+const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 export const analyzePlantDisease = async (base64Image: string): Promise<ScanResult> => {
   try {
@@ -32,13 +33,17 @@ export const analyzePlantDisease = async (base64Image: string): Promise<ScanResu
             description: { type: Type.STRING },
             treatment: { type: Type.ARRAY, items: { type: Type.STRING } },
             prevention: { type: Type.ARRAY, items: { type: Type.STRING } },
-            severity: { type: Type.STRING, enum: ['Low', 'Moderate', 'High', 'Critical'] },
+            severity: { 
+              type: Type.STRING, 
+              description: "The severity level of the disease: Low, Moderate, High, or Critical" 
+            },
           },
           required: ["diseaseName", "confidence", "cropType", "description", "treatment", "prevention", "severity"]
         },
       },
     });
 
+    // Directly access the .text property (not a method)
     const resultStr = response.text;
     if (!resultStr) throw new Error("No response from AI");
     

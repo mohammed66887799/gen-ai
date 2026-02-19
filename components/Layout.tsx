@@ -89,7 +89,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         </div>
       </main>
 
-      {/* Mobile Bottom Navigation Bar (Persistent CTA for Diagnosis) */}
+      {/* Mobile Bottom Navigation Bar */}
       <div className="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-30">
         <Link 
           to="/diagnosis"
